@@ -39,9 +39,9 @@
           socket.emit('join', inputBox.value);
           room = inputBox.value;
           inputBox.value = "";
-          socket.emit('leave', room);
           document.querySelector('#join').innerText=room;
           document.querySelector('#leave').innerText='Leave ' + room;
+          document.querySelector('#join').disabled = true;
           return false;
           
         };

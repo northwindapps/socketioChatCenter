@@ -12,15 +12,8 @@
             <h1>The queue of inquries</h1>
         </section>
         <section class="main">
-            <!-- <div class="card">
-                <img src="img/customerIcon.png" alt="" srcset="">
-                <h3>name</h3>
-                <p class="disc">Here comes description. You'll master C# within 10 hours tutorial.</p>
-                <button id="1">Answer</button>
-            </div> -->
         </section>
         <section class="footer">
-
         </section>
     </div>
 </body>
@@ -28,38 +21,78 @@
 <script>
     (function(){
       let socket = io();
-      let customerList = [];
-      const mainUl = document.querySelector('.main');
-        
-      socket.on('update customer list', function(msg){
-        if (customerList.includes(msg)) {
+      let caselist = [];
+      
+      document.querySelector('.main').innerHTML = '';
+      fetch('/caselist')
+          .then(function(response) {
+            return response.json();
+          })
+          .then(function(myJson) {
+            console.log("myJson Reload",myJson);
+            caselist = myJson.msg.split(',');
+            //https://stackoverflow.com/questions/20668872/remove-whitespace-only-array-elements
+            caselist = caselist.filter(function(str) {
+                return /\S/.test(str);
+            });
+            caselist = Array.from(new Set(caselist));
+            console.log(caselist);
 
-        }else{
-            customerList.push(msg);
-        }
-
-        const cleanUPSection = document.querySelector('.main');
-        cleanUPSection.innerHTML = '';
-
-        for (let index = 0; index < customerList.length; index++) {
+            //rendering Cards
+            for (let index = 0; index < caselist.length; index++) {
+             console.log("caselist",caselist[index]);
              let divTag = document.createElement('div');
              divTag.className="card";
              divTag.innerHTML= "<img src=\"img/customerIcon.png\" alt=\“file\”><h3>" 
-                    + customerList[index] + "</h3><p class=\"disc\">Here comes the situation's description.</p><button id=\"" + customerList[index] + "\">" + "Answer</button>";
-             mainUl.appendChild(divTag);
-        }
+                    + caselist[index] + "</h3><p class=\"disc\">Here comes the situation's description.</p><button id=\"" + caselist[index] + "\">" + "Answer</button>";
+             document.querySelector('.main').appendChild(divTag);
+            }
 
-            const buttons = document.querySelectorAll('button').forEach(function(el){
+            document.querySelectorAll('button').forEach(function(el){
                 el.addEventListener('click', function(){
                     socket.emit('join',this.id);
-                    //When a call is answered by an operator, the call is removed from the task list.
-                    arry.filter(function(item) {
-                        return item !== this.id
-                    });
-                    socket.emit('update customer list',arry);
                     window.location = '/op?room='+this.id;
                 });
+            }); 
+          });
+
+
+      socket.on('update customer list', function(){
+        document.querySelector('.main').innerHTML = '';
+
+        fetch('/caselist')
+          .then(function(response) {
+            return response.json();
+          })
+          .then(function(myJson) {
+            console.log("myJson update customer",myJson);
+              
+            caselist = myJson.msg.split(',');
+            //https://stackoverflow.com/questions/20668872/remove-whitespace-only-array-elements
+            caselist = caselist.filter(function(str) {
+                return /\S/.test(str);
             });
+            caselist = Array.from(new Set(caselist));
+            console.log(caselist);
+            
+
+            //rendering Cards
+            for (let index = 0; index < caselist.length; index++) {
+             console.log("caselist",caselist[index]);
+             let divTag = document.createElement('div');
+             divTag.className="card";
+             divTag.innerHTML= "<img src=\"img/customerIcon.png\" alt=\“file\”><h3>" 
+                    + caselist[index] + "</h3><p class=\"disc\">Here comes the situation's description.</p><button id=\"" + caselist[index] + "\">" + "Answer</button>";
+             document.querySelector('.main').appendChild(divTag);
+            }
+
+            document.querySelectorAll('button').forEach(function(el){
+                el.addEventListener('click', function(){
+                    socket.emit('join',this.id);
+                    window.location = '/op?room='+this.id;
+                });
+            }); 
+          });
       });
     }())
   </script>
