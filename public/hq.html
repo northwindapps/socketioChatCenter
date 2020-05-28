@@ -22,43 +22,12 @@
     (function(){
       let socket = io();
       let caselist = [];
-      
-      document.querySelector('.main').innerHTML = '';
-      fetch('/caselist')
-          .then(function(response) {
-            return response.json();
-          })
-          .then(function(myJson) {
-            console.log("myJson Reload",myJson);
-            caselist = myJson.msg.split(',');
-            //https://stackoverflow.com/questions/20668872/remove-whitespace-only-array-elements
-            caselist = caselist.filter(function(str) {
-                return /\S/.test(str);
-            });
-            caselist = Array.from(new Set(caselist));
-            console.log(caselist);
-
-            //rendering Cards
-            for (let index = 0; index < caselist.length; index++) {
-             console.log("caselist",caselist[index]);
-             let divTag = document.createElement('div');
-             divTag.className="card";
-             divTag.innerHTML= "<img src=\"img/customerIcon.png\" alt=\“file\”><h3>" 
-                    + caselist[index] + "</h3><p class=\"disc\">Here comes the situation's description.</p><button id=\"" + caselist[index] + "\">" + "Answer</button>";
-             document.querySelector('.main').appendChild(divTag);
-            }
-
-            document.querySelectorAll('button').forEach(function(el){
-                el.addEventListener('click', function(){
-                    socket.emit('join',this.id);
-                    socket.emit('answering',this.id);
-                    window.location = '/op?room='+this.id;
-                });
-            }); 
-          });
-
+      update.call();
 
       socket.on('update customer list', function(){
+        update.call();
+      });
+      function update() {
         document.querySelector('.main').innerHTML = '';
 
         fetch('/caselist')
@@ -95,7 +64,7 @@
                 });
             }); 
           });
-      });
+      }
     }())
   </script>
 </html>
