@@ -1,4 +1,5 @@
-# chat-example
+# customer service chat
+This app is created by using the following offical socketio sample app.
 
 This is the source code for a very simple chat example used for
 the [Getting Started](http://socket.io/get-started/chat/) guide
