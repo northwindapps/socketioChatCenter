@@ -51,6 +51,7 @@
             document.querySelectorAll('button').forEach(function(el){
                 el.addEventListener('click', function(){
                     socket.emit('join',this.id);
+                    socket.emit('answering',this.id);
                     window.location = '/op?room='+this.id;
                 });
             }); 
@@ -89,6 +90,7 @@
             document.querySelectorAll('button').forEach(function(el){
                 el.addEventListener('click', function(){
                     socket.emit('join',this.id);
+                    socket.emit('answering',this.id);
                     window.location = '/op?room='+this.id;
                 });
             }); 

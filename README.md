@@ -1,4 +1,7 @@
-# chat-example
+# customer service chat-example
+This is the app modified from the official sample chat.
+Many features have been added to deal with customer's inquiries.
+
 
 This is the source code for a very simple chat example used for
 the [Getting Started](http://socket.io/get-started/chat/) guide

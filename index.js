@@ -68,8 +68,7 @@ io.on('connection', function(socket){
     console.log("All rooms",io.sockets.adapter.rooms);
   });
 
-  socket.on('leave', function(msg) {
-    socket.leave(msg);
+  socket.on('answering', function(msg) {
     let caselist = caseListStr.split(',');
     caselist = caselist.filter(e => e !== msg);
     caselist = caselist.filter(function(str) {
@@ -92,6 +91,10 @@ io.on('connection', function(socket){
         }
       }); 
     io.sockets.emit('update customer list');
+  });
+
+  socket.on('leave', function(msg) {
+    socket.leave(msg);
   });
 });
 
