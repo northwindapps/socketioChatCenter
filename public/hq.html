@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Center</title>
+    <link rel="stylesheet" href="hq.css">
+</head>
+<body>
+    <div class="container">
+        <section class="header">
+            <h1>The queue of inquries</h1>
+        </section>
+        <section class="main">
+            <!-- <div class="card">
+                <img src="img/customerIcon.png" alt="" srcset="">
+                <h3>name</h3>
+                <p class="disc">Here comes description. You'll master C# within 10 hours tutorial.</p>
+                <button id="1">Answer</button>
+            </div> -->
+        </section>
+        <section class="footer">
+
+        </section>
+    </div>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    (function(){
+      let socket = io();
+      let customerList = [];
+      const mainUl = document.querySelector('.main');
+        
+      socket.on('update customer list', function(msg){
+        if (customerList.includes(msg)) {
+
+        }else{
+            customerList.push(msg);
+        }
+
+        const cleanUPSection = document.querySelector('.main');
+        cleanUPSection.innerHTML = '';
+
+        for (let index = 0; index < customerList.length; index++) {
+             let divTag = document.createElement('div');
+             divTag.className="card";
+             divTag.innerHTML= "<img src=\"img/customerIcon.png\" alt=\“file\”><h3>" 
+                    + customerList[index] + "</h3><p class=\"disc\">Here comes the situation's description.</p><button id=\"" + customerList[index] + "\">" + "Answer</button>";
+             mainUl.appendChild(divTag);
+        }
+
+            const buttons = document.querySelectorAll('button').forEach(function(el){
+                el.addEventListener('click', function(){
+                    socket.emit('join',this.id);
+                    //When a call is answered by an operator, the call is removed from the task list.
+                    arry.filter(function(item) {
+                        return item !== this.id
+                    });
+                    socket.emit('update customer list',arry);
+                    window.location = '/op?room='+this.id;
+                });
+            });
+      });
+    }())
+  </script>
+</html>

@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <!-- https://socket.io/get-started/chat/ official demo -->
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 40px; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+      #messages { margin-bottom: 40px }
+      #join {width: 50%; height: 40px; position: absolute; bottom: 0px; left: 0px;}
+      #leave {width: 50%; height: 40px; position: absolute; bottom: 0px; left: 50vw;}
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form action="/Submit">
+      <input id="m" autocomplete="off" placeholder="enter the room name then press the Join button first" /><button>Send</button>
+    </form>
+    <button id="join">Join</button>
+    <button id="leave">Leave</button>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+      (function(){
+        let socket = io();
+        let room = "";
+        const messageUl = document.querySelector('#messages');
+        const inputBox = document.querySelector('#m');
+        const customerJoin = document.querySelector('#join').onclick = ()=>{
+          //This adds new customer to  the customers list.
+          socket.emit('customer joined', inputBox.value);
+          //joins the room with the name specified in the iputfield.
+          socket.emit('join', inputBox.value);
+          room = inputBox.value;
+          inputBox.value = "";
+          socket.emit('leave', room);
+          document.querySelector('#join').innerText=room;
+          document.querySelector('#leave').innerText='Leave ' + room;
+          return false;
+          
+        };
+
+        const customerLeave = document.querySelector('#leave').onclick = ()=>{
+          socket.emit('leave', room);
+          document.querySelector('#join').innerText='Join';
+          document.querySelector('#leave').innerText='Leave';
+          return false;
+        };
+      
+        document.querySelector('form').onsubmit = function onSubmit(form){
+          if(room.length > 0){
+            socket.emit('chat message', {'message':inputBox.value, 'room':room});
+            inputBox.value = "";
+            return false;
+          }
+        }
+
+        socket.on('chat message', function(msg){
+        const li = document.createElement('li');
+        li.innerText=msg;
+        messageUl.appendChild(li);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+    }())
+    </script>
+  </body>
+</html>
